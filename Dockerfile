@@ -48,6 +48,13 @@ RUN git clone https://github.com/colmap/colmap.git /tmp/colmap \
     && make install \
     && rm -rf /tmp/colmap
 
+RUN git clone... \
+    && make install \
+    && rm -rf /tmp/colmap \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip cache purge
+
 RUN python3.10 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
