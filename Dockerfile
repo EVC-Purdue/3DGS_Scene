@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
+FROM vastai/pytorch:2.2.2-cuda-12.1.1-py310-ipv2
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV CUDA_HOME=/usr/local/cuda
