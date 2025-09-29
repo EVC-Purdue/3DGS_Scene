@@ -13,8 +13,9 @@ class Calibrator:
         """
         self.loftr = None
         self.matcher = None
-        self.sift = None
-        self.matcher_type = matcher
+        self.alg = None
+
+        self.matcher = matcher
         self.setup_matcher()
 
     def setup_matcher(self):
@@ -30,7 +31,7 @@ class Calibrator:
                 self.loftr = self.loftr.cuda()
         except ImportError:
             self.matcher_type = "opencv"
-            self.sift = cv2.SIFT.create(nfeatures=2000)
+            self.alg = cv2.ORB.create(nfeatures=2000)
             self.matcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
 
     def extract_all_matches(self, frames):
@@ -48,8 +49,8 @@ class Calibrator:
                 gray2 = cv2.cvtColor(frames[i + 1], cv2.COLOR_BGR2GRAY)
 
                 # Detect + compute
-                kp1, des1 = self.sift.detectAndCompute(gray1, None)
-                kp2, des2 = self.sift.detectAndCompute(gray2, None)
+                kp1, des1 = self.alg.detectAndCompute(gray1, None)
+                kp2, des2 = self.alg.detectAndCompute(gray2, None)
 
                 if not (des1 and des2):
                     log(WARNING, "Error in matching! - Skipping")
