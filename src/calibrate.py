@@ -41,11 +41,13 @@ class Calibrator:
         :param frames: all video frames
         :return: a np array of all matches in the form of (frame_idx1, frame_idx2, pts1, pts2)
         """
+        log(INFO, f"Processing {len(frames)} frames")
         all_matches = []
         for i in range(len(frames) - 1):
-            log(INFO, f"Matching frames {i} and {i + 1}")
+            if i % 100 == 0:
+                log(INFO, f"Matching frames {i} and {i + 1}")
 
-            if self.matcher_type == 'opencv':
+            if self.matcher_type == "opencv":
                 gray1 = cv2.cvtColor(frames[i], cv2.COLOR_BGR2GRAY)
                 gray2 = cv2.cvtColor(frames[i + 1], cv2.COLOR_BGR2GRAY)
 
@@ -79,12 +81,9 @@ class Calibrator:
             else:  # LoFTR matching
                 pts1, pts2 = self.match_with_loftr(frames[i], frames[i + 1])
 
-            all_matches.append({
-                'frame_i': i,
-                'frame_j': i + 1,
-                'pts1': pts1,
-                'pts2': pts2
-            })
+            all_matches.append(
+                {"frame_i": i, "frame_j": i + 1, "pts1": pts1, "pts2": pts2}
+            )
         return all_matches
 
     def match_with_loftr(self, img1, img2):
@@ -109,12 +108,12 @@ class Calibrator:
         img2_gray = K.color.rgb_to_grayscale(img2_t)
 
         with torch.no_grad():
-            input_dict = {'image0': img1_gray, 'image1': img2_gray}
+            input_dict = {"image0": img1_gray, "image1": img2_gray}
             correspondences = self.loftr(input_dict)
 
-            mkpts0 = correspondences['keypoints0'].cpu().numpy()
-            mkpts1 = correspondences['keypoints1'].cpu().numpy()
-            confidence = correspondences['confidence'].cpu().numpy()
+            mkpts0 = correspondences["keypoints0"].cpu().numpy()
+            mkpts1 = correspondences["keypoints1"].cpu().numpy()
+            confidence = correspondences["confidence"].cpu().numpy()
 
             # Filter by confidence
             mask = confidence > 0.5
@@ -122,7 +121,6 @@ class Calibrator:
             mkpts1 = mkpts1[mask]
 
         return mkpts0, mkpts1
-
 
     def refine_with_bundle_adjustment(self, matches, K_init):
         """
