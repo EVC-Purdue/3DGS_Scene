@@ -5,6 +5,7 @@ from scipy.optimize import least_squares
 from logging import log, INFO, WARNING
 from torch.nn import functional as F
 
+
 class Calibrator:
     def __init__(self, matcher="opencv"):
         """
