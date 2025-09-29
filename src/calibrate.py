@@ -57,7 +57,8 @@ class Calibrator:
 
                 matches = self.matcher.knnMatch(des1, des2, k=2)
 
-                # Lowe's ratio test - https://sites.cc.gatech.edu/classes/AY2016/cs4476_fall/results/proj2/html/sshah426/index.html
+                # Lowe's ratio test
+                # https://sites.cc.gatech.edu/classes/AY2016/cs4476_fall/results/proj2/html/sshah426/index.html
                 # High ratio means clear match
                 good_matches = []
                 for match_pair in matches:
@@ -73,7 +74,7 @@ class Calibrator:
                 pts1 = np.float32([kp1[m.queryIdx].pt for m in good_matches])
                 pts2 = np.float32([kp2[m.trainIdx].pt for m in good_matches])
 
-            else: # LoFTR matching
+            else:  # LoFTR matching
                 pts1, pts2 = self.match_with_loftr(frames[i], frames[i + 1])
 
             all_matches.append({
@@ -83,10 +84,6 @@ class Calibrator:
                 'pts2': pts2
             })
         return all_matches
-
-
-
-        return np.array([])
 
     def match_with_loftr(self, img1, img2):
         """
